@@ -1,0 +1,19 @@
+# Samsung SDS Folium popup LAT & LON upon the spots
+
+import pandas as pd
+import numpy as np
+import folium
+
+pd.options.display.max_rows = 4000
+
+data = pd.read_csv("C:/Users/SDS/Desktop/data.csv")
+
+data1 = data[data['MMSI3']=='636092489_11_3']
+data1 = data1.reset_index()
+data1['LON']=data1['LON'].apply(lambda x : x-360 if x > 0 else x)
+m = folium.Map(location=[data1.loc[0,'LAT'],data1.loc[0,'LON']],zoom_start=2)
+for i in range(data1.shape[0]):
+    folium.CircleMarker(location=[data1.loc[i,'LAT'],data1.loc[i,'LON']],
+    color='red',radius=0.05, popup='%s: %s, %s' % (str(i), str(data1.loc[i, 'LAT']), str(data1.loc[i, 'LON']))).add_to(m)
+    
+m
